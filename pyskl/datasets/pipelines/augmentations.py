@@ -899,3 +899,66 @@ class TenCrop:
     def __repr__(self):
         repr_str = f'{self.__class__.__name__}(crop_size={self.crop_size})'
         return repr_str
+
+
+# HAR Skeleton Augmentation
+@PIPELINES.register_module()
+class RandomCutout:
+    """Randomly cuts out a portion of the skeleton data by masking joints or frames.
+
+    Required keys are "keypoint", added or modified keys are "keypoint".
+
+    Args:
+        num_joints_to_cut (int, optional): Number of joints to randomly cut out. Default is None.
+        num_frames_to_cut (int, optional): Number of frames to randomly cut out. Default is None.
+        cutout_value (float): The value to fill in the cut-out regions. Default is 0.
+    """
+
+    def __init__(self, num_joints_to_cut=None, num_frames_to_cut=None, cutout_value=0.0):
+        self.num_joints_to_cut = num_joints_to_cut
+        self.num_frames_to_cut = num_frames_to_cut
+        self.cutout_value = cutout_value
+
+    def _cutout_joints(self, keypoints):
+        """Randomly masks out selected joints across all frames."""
+        num_joints = keypoints.shape[1]
+        if self.num_joints_to_cut is None or self.num_joints_to_cut >= num_joints:
+            return keypoints
+
+        # Randomly select joints to cut out
+        joints_to_cut = np.random.choice(num_joints, self.num_joints_to_cut, replace=False)
+        keypoints[:, joints_to_cut, :] = self.cutout_value
+        return keypoints
+
+    def _cutout_frames(self, keypoints):
+        """Randomly masks out selected frames."""
+        num_frames = keypoints.shape[0]
+        if self.num_frames_to_cut is None or self.num_frames_to_cut >= num_frames:
+            return keypoints
+
+        # Randomly select frames to cut out
+        frames_to_cut = np.random.choice(num_frames, self.num_frames_to_cut, replace=False)
+        keypoints[frames_to_cut, :, :] = self.cutout_value
+        return keypoints
+
+    def __call__(self, results):
+        """Performs the Random Cutout augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed to the next transform in pipeline.
+        """
+        keypoints = results['keypoint']
+
+        if self.num_joints_to_cut:
+            keypoints = self._cutout_joints(keypoints)
+
+        if self.num_frames_to_cut:
+            keypoints = self._cutout_frames(keypoints)
+
+        results['keypoint'] = keypoints
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}(num_joints_to_cut={self.num_joints_to_cut}, '
+                    f'num_frames_to_cut={self.num_frames_to_cut}, cutout_value={self.cutout_value})')
+        return repr_str
