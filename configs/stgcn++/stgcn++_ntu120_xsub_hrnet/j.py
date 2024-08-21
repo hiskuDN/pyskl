@@ -15,6 +15,7 @@ train_pipeline = [
     dict(type='GenSkeFeat', dataset='coco', feats=['j']),
     dict(type='UniformSample', clip_len=100),
     dict(type='PoseDecode'),
+    dict(type='RandomResizedCrop', area_range=(0.56, 1.0)),
     dict(type='FormatGCNInput', num_person=2),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
