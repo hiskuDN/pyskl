@@ -15,7 +15,7 @@ train_pipeline = [
     dict(type='GenSkeFeat', dataset='nturgb+d', feats=['j']),
     dict(type='UniformSample', clip_len=100),
     dict(type='PoseDecode'),
-    dict(type='RandomCutout', num_joints_to_cut=10),
+    dict(type='RandomCutout', num_joints_to_cut=5),
     dict(type='FormatGCNInput', num_person=2),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
