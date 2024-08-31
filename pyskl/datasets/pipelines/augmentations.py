@@ -987,19 +987,15 @@ class MergeCutoutSamples:
             list: The dataset merged with the augmented samples.
         """
         original_keypoints = results['keypoint']
-        original_label = results['label']
 
         merged_keypoints = [original_keypoints]
-        merged_labels = [original_label]
 
         for _ in range(self.num_samples):
             cutout_sample = self.cutout(results.copy())
             merged_keypoints.append(cutout_sample['keypoint'])  # Collect the augmented keypoints
-            merged_labels.append(cutout_sample['label'])  # Collect the corresponding labels
 
         # Concatenate the keypoints and labels along the first axis (assuming the shape is [frames, joints, dimensions])
         results['keypoint'] = np.concatenate(merged_keypoints, axis=0)
-        results['label'] = merged_labels
 
         # If there are other fields like 'label', you might keep them the same or handle them differently
         # e.g., duplicating the label for each augmented sample is usually unnecessary for classification tasks.
