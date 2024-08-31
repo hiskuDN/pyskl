@@ -977,7 +977,7 @@ class MergeCutoutSamples:
         self.num_samples = num_samples
         self.cutout = RandomCutout(**cutout_cfg)
 
-    def __call__(self, dataset):
+    def __call__(self, results):
         """Performs the Random Cutout augmentation and merges the results with the original dataset.
 
         Args:
@@ -986,13 +986,13 @@ class MergeCutoutSamples:
         Returns:
             list: The dataset merged with the augmented samples.
         """
-        merged_dataset = dataset.copy()
+        merged_results = [results.copy()]
 
         for _ in range(self.num_samples):
-            cutout_sample = self.cutout(dataset[0].copy())  # Apply cutout to a sample
-            merged_dataset.append(cutout_sample)  # Append the augmented sample
+            cutout_sample = self.cutout(results.copy())  # Apply cutout to a sample
+            merged_results.append(cutout_sample)  # Append the augmented sample
 
-        return merged_dataset
+        return merged_results
 
     def __repr__(self):
         return f'{self.__class__.__name__}(cutout_cfg={self.cutout_cfg}, num_samples={self.num_samples})'
