@@ -956,26 +956,43 @@ class RandomCutout:
 
         results['keypoint'] = keypoints
         return results
-    
-    def merge_cutout_samples(self, dataset, num_samples):
-        """Merges the cutout samples to the original dataset.
-
-        Args:
-            dataset (list): The original dataset.
-            num_samples (int): The number of cutout samples to generate and merge.
-
-        Returns:
-            list: The merged dataset.
-        """
-        merged_dataset = dataset.copy()
-
-        for _ in range(num_samples):
-            cutout_sample = self.__call__(dataset[0].copy())
-            merged_dataset.append(cutout_sample)
-
-        return merged_dataset
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}(num_joints_to_cut={self.num_joints_to_cut}, '
                     f'num_frames_to_cut={self.num_frames_to_cut}, cutout_value={self.cutout_value})')
         return repr_str
+
+
+@PIPELINES.register_module()
+class MergeCutoutSamples:
+    """Pipeline step to apply RandomCutout and merge the cutout samples with the original dataset.
+
+    Args:
+        cutout_cfg (dict): Configuration for the RandomCutout.
+        num_samples (int): Number of cutout samples to generate and merge.
+    """
+
+    def __init__(self, cutout_cfg, num_samples):
+        self.cutout_cfg = cutout_cfg
+        self.num_samples = num_samples
+        self.cutout = RandomCutout(**cutout_cfg)
+
+    def __call__(self, dataset):
+        """Performs the Random Cutout augmentation and merges the results with the original dataset.
+
+        Args:
+            dataset (list): The original dataset to be augmented and merged.
+
+        Returns:
+            list: The dataset merged with the augmented samples.
+        """
+        merged_dataset = dataset.copy()
+
+        for _ in range(self.num_samples):
+            cutout_sample = self.cutout(dataset[0].copy())  # Apply cutout to a sample
+            merged_dataset.append(cutout_sample)  # Append the augmented sample
+
+        return merged_dataset
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}(cutout_cfg={self.cutout_cfg}, num_samples={self.num_samples})'
