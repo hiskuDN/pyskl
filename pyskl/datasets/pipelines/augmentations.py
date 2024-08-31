@@ -999,7 +999,7 @@ class MergeCutoutSamples:
 
         # Concatenate the keypoints and labels along the first axis (assuming the shape is [frames, joints, dimensions])
         results['keypoint'] = np.concatenate(merged_keypoints, axis=0)
-        results['label'] = np.concatenate(merged_labels, axis=0)
+        results['label'] = merged_labels
 
         # If there are other fields like 'label', you might keep them the same or handle them differently
         # e.g., duplicating the label for each augmented sample is usually unnecessary for classification tasks.
