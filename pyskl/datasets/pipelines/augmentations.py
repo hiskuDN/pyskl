@@ -913,7 +913,6 @@ class RandomCutout:
         num_frames_to_cut (int, optional): Number of frames to randomly cut out. Default is None.
         cutout_value (float): The value to fill in the cut-out regions. Default is 0.
     """
-
     def __init__(self, num_joints_to_cut=None, num_frames_to_cut=None, cutout_value=0.0):
         self.num_joints_to_cut = num_joints_to_cut
         self.num_frames_to_cut = num_frames_to_cut
@@ -957,6 +956,24 @@ class RandomCutout:
 
         results['keypoint'] = keypoints
         return results
+    
+    def merge_cutout_samples(self, dataset, num_samples):
+        """Merges the cutout samples to the original dataset.
+
+        Args:
+            dataset (list): The original dataset.
+            num_samples (int): The number of cutout samples to generate and merge.
+
+        Returns:
+            list: The merged dataset.
+        """
+        merged_dataset = dataset.copy()
+
+        for _ in range(num_samples):
+            cutout_sample = self.__call__(dataset[0].copy())
+            merged_dataset.append(cutout_sample)
+
+        return merged_dataset
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}(num_joints_to_cut={self.num_joints_to_cut}, '
