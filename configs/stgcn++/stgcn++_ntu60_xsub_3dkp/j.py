@@ -15,7 +15,7 @@ train_pipeline = [
     dict(type='GenSkeFeat', dataset='nturgb+d', feats=['j']),
     dict(type='UniformSample', clip_len=100),
     dict(type='PoseDecode'),
-    dict(type='RandomCutout', num_frames_to_cut=10),
+    dict(type='RandomCutout', num_frames_to_cut=100),
         # dict(type='MergeCutoutSamples', 
         #  cutout_cfg=dict(num_joints_to_cut=10, cutout_value=0.0),
         #  num_samples=5),
