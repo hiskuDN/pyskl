@@ -18,7 +18,7 @@ train_pipeline = [
     # dict(type='RandomCutout', num_frames_to_cut=100),
     dict(type='MergeCutoutSamples', 
          cutout_cfg=dict(num_joints_to_cut=10, cutout_value=0.0),
-         num_samples=2000),
+         num_samples=200),
     dict(type='FormatGCNInput', num_person=2),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
