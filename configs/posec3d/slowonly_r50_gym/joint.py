@@ -26,7 +26,6 @@ right_kp = [2, 4, 6, 8, 10, 12, 14, 16]
 train_pipeline = [
     dict(type='UniformSampleFrames', clip_len=48),
     dict(type='PoseDecode'),
-    dict(type='RandomCutout', num_joints_to_cut=10),
     dict(type='PoseCompact', hw_ratio=1., allow_imgpad=True),
     dict(type='Resize', scale=(-1, 64)),
     dict(type='RandomResizedCrop', area_range=(0.56, 1.0)),
