@@ -20,7 +20,6 @@ train_pipeline = [
     dict(type='RandomRot', theta=0.2),
     dict(type='GenSkeFeat', feats=[modality]),
     dict(type='UniformSampleDecode', clip_len=100),
-    dict(type='RandomCutout', num_joints_to_cut=10),
     dict(type='FormatGCNInput'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
