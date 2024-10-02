@@ -11,7 +11,6 @@ ann_file = 'data/hmdb51/hmdb51_hrnet.pkl'
 pipeline = [
     dict(type='PreNormalize2D'),
     dict(type='GenSkeFeat', dataset='coco', feats=['j']),
-    dict(type='PadTo', length=300, mode='zero'),
     dict(type='PoseDecode'),
     dict(type='FormatGCNInput', num_person=2),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
